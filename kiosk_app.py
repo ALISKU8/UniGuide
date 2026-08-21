@@ -38,14 +38,44 @@ gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 # استخدام cache لمنع إعادة تحميل قاعدة البيانات مع كل رسالة (لتسريع الأداء)[cite: 7]
 @st.cache_resource
 def load_database():
+    # إنشاء أو ربط قاعدة البيانات
     chroma_client = chromadb.PersistentClient(path="chroma_db")
     arabic_embed_model = embedding_functions.SentenceTransformerEmbeddingFunction(
         model_name="paraphrase-multilingual-MiniLM-L12-v2"
     )
-    collection = chroma_client.get_collection(
-        name="uj_knowledge_base", 
+    
+    collection = chroma_client.get_or_create_collection(
+        name="university_regulations",
         embedding_function=arabic_embed_model
     )
+    
+    # التحقق الذكي: إذا كانت القاعدة فارغة (تعمل لأول مرة على السحابة)، ابنها تلقائياً من ملفات docs/
+    if collection.count() == 0:
+        docs_dir = "docs"
+        if os.path.exists(docs_dir):
+            doc_id_counter = 1
+            for filename in os.listdir(docs_dir):
+                if filename.endswith(".pdf"):
+                    file_path = os.path.join(docs_dir, filename)
+                    doc = fitz.open(file_path)
+                    full_text = ""
+                    for page in doc:
+                        full_text += page.get_text() + "\n"
+                    
+                    # تقسيم النص إلى أجزاء (Chunks) لضمان دقة البحث
+                    chunk_size = 1000
+                    overlap = 200
+                    chunks = [full_text[i:i+chunk_size] for i in range(0, len(full_text), chunk_size - overlap)]
+                    
+                    for i, chunk in enumerate(chunks):
+                        if len(chunk.strip()) > 10:
+                            collection.add(
+                                documents=[chunk],
+                                metadatas=[{"source": filename}],
+                                ids=[f"cloud_doc_{doc_id_counter}_{i}"]
+                            )
+                    doc_id_counter += 1
+                    
     return collection
 
 collection = load_database()
