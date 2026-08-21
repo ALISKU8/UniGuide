@@ -1,4 +1,4 @@
-aiofiles==streamlit
+streamlit
 google-generativeai
 chromadb
 pymupdf
