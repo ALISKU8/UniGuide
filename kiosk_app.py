@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 # ==========================================
 st.set_page_config(page_title="UniGuide - الخدمة الذاتية", layout="wide")
 
-# كود CSS لضبط اتجاه النص من اليمين لليسار[cite: 7]
+# كود CSS لضبط اتجاه النص وتحسين الواجهة وإخفاء شعارات المنصة
 st.markdown("""
     <style>
         .stApp {
@@ -24,6 +24,25 @@ st.markdown("""
         .stChatInputContainer textarea {
             direction: rtl;
             text-align: right;
+        }
+        
+        /* ========================================== */
+        /* التعديلات الجديدة (آمنة ولا تؤثر على الأداء) */
+        /* ========================================== */
+        
+        /* 1. إخفاء الشريط العلوي (صورتك، حسابك، واسم المنصة) ليكون رسمياً للجامعة */
+        header {visibility: hidden !important;}
+        
+        /* 2. إخفاء الشريط السفلي (علامة Made with Streamlit) */
+        footer {visibility: hidden !important;}
+        
+        /* 3. تحسين العرض على شاشات الجوال (إلغاء الحاجة للزوم وتصغير الهوامش الجانبية) */
+        .block-container {
+            padding-top: 1.5rem !important;
+            padding-bottom: 1.5rem !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+            max-width: 100% !important;
         }
     </style>
 """, unsafe_allow_html=True)
