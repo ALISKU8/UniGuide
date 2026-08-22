@@ -53,10 +53,18 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 2. تحميل المتغيرات والاتصال بالخدمات[cite: 7]
+# 2. تحميل المتغيرات والاتصال بالخدمات
 # ==========================================
 load_dotenv()
+
+# محاولة جلب المفتاح من البيئة المحلية، وإذا لمჩيوجده يجلبه من أسرار Streamlit السحابية
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    try:
+        GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+    except Exception:
+        GEMINI_API_KEY = None
+
 gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
 # استخدام cache لمنع إعادة تحميل قاعدة البيانات مع كل رسالة (لتسريع الأداء)[cite: 7]
