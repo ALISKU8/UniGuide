@@ -1,10 +1,8 @@
 streamlit
-fastapi
-uvicorn[standard]
 google-genai
 chromadb
 sentence-transformers
-python-dotenv
-pymupdf
 torch
 torchvision
+python-dotenv
+pymupdf
