@@ -72,7 +72,7 @@ gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 def load_database():
     chroma_client = chromadb.PersistentClient(path="chroma_db")
     arabic_embed_model = embedding_functions.SentenceTransformerEmbeddingFunction(
-        model_name="paraphrase-multilingual-MiniLM-L12-v2"
+        model_name="paraphrase-multilingual-mpnet-base-v2"
     )
     collection = chroma_client.get_collection(
         name="uj_knowledge_base", 
