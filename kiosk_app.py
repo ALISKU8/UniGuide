@@ -55,33 +55,42 @@ st.markdown("""
 # ==========================================
 # 2. تحميل المتغيرات والاتصال بالخدمات
 # ==========================================
-load_dotenv()
+from google.genai import types
 
-# محاولة جلب المفتاح من البيئة المحلية، وإذا لمჩيوجده يجلبه من أسرار Streamlit السحابية
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-if not GEMINI_API_KEY:
-    try:
-        GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
-    except Exception:
-        GEMINI_API_KEY = None
+# نفس فئة التضمين المستخدمة في build_db
+class GeminiEmbeddingFunction(chromadb.EmbeddingFunction):
+    def __init__(self, api_key: str, task_type: str = "RETRIEVAL_QUERY"):
+        self.client = genai.Client(api_key=api_key)
+        self.task_type = task_type
 
-gemini_client = genai.Client(api_key=GEMINI_API_KEY)
+    def __call__(self, input: chromadb.Documents) -> chromadb.Embeddings:
+        result = self.client.models.embed_content(
+            model="gemini-embedding-001",
+            contents=input,
+            config=types.EmbedContentConfig(
+                task_type=self.task_type,
+                output_dimensionality=768,
+            ),
+        )
+        return [e.values for e in result.embeddings]
 
-# استخدام cache لمنع إعادة تحميل قاعدة البيانات مع كل رسالة (لتسريع الأداء)[cite: 7]
 @st.cache_resource
 def load_database():
     chroma_client = chromadb.PersistentClient(path="chroma_db")
-    arabic_embed_model = embedding_functions.SentenceTransformerEmbeddingFunction(
-        model_name="paraphrase-multilingual-mpnet-base-v2"
+    
+    # ربط البحث بنفس محرك سحابة جيميناي
+    gemini_embed_fn = GeminiEmbeddingFunction(
+        api_key=GEMINI_API_KEY, 
+        task_type="RETRIEVAL_QUERY"
     )
+    
     collection = chroma_client.get_collection(
         name="uj_knowledge_base", 
-        embedding_function=arabic_embed_model
+        embedding_function=gemini_embed_fn
     )
     return collection
 
 collection = load_database()
-
 # ==========================================
 # 3. القائمة الجانبية (للتوجيه الشخصي وإنهاء الجلسة)[cite: 7]
 # ==========================================
