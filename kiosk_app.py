@@ -187,7 +187,7 @@ if prompt := st.chat_input("اكتب استفسارك هنا (مثال: كيف �
                 message_placeholder.markdown(ai_reply)
                 st.session_state.messages.append({"role": "assistant", "content": ai_reply})
             
-except Exception as e:
+        except Exception as e:
             error_msg = f"🔍 [تشخيص الجذر]: {str(e)}"
             message_placeholder.markdown(error_msg)
             print(f"Error: {e}")
