@@ -8,51 +8,36 @@ from dotenv import load_dotenv
 # ==========================================
 # 1. إعدادات الصفحة ودعم اللغة العربية (RTL)
 # ==========================================
-# التعديل 1: إجبار القائمة الجانبية على الانغلاق في الجوال لتعطي مساحة 100% للمحادثة
-st.set_page_config(
-    page_title="UniGuide - الخدمة الذاتية", 
-    layout="wide", 
-    initial_sidebar_state="collapsed" 
-)
-
-# التعديل 2: كود CSS "النووي" لإخفاء كل شعارات Streamlit السحابية وتحسين الجوال
+# كود CSS لضبط اتجاه النص وتحسين الواجهة وإخفاء شعارات المنصة
 st.markdown("""
     <style>
-        /* إخفاء الهيدر (الشريط العلوي) والفوتر الأساسي */
-        [data-testid="stHeader"], [data-testid="stFooter"], header, footer {
-            display: none !important;
-            visibility: hidden !important;
-        }
-
-        /* إخفاء شعارات Streamlit Cloud الإجبارية (Created by... و Hosted with...) */
-        [data-testid="stToolbar"], 
-        [data-testid="stDecoration"], 
-        .viewerBadge_container__1QSob,
-        .styles_viewerBadge__1yB5_,
-        .viewerBadge_link__1S137,
-        .viewerBadge_text__1JaDK {
-            display: none !important;
-            visibility: hidden !important;
-        }
-
-        /* ضبط اتجاه النص من اليمين لليسار */
         .stApp {
             direction: rtl;
         }
+        /* محاذاة جميع النصوص لليمين */
         p, div, h1, h2, h3, h4, h5, h6, ul, li, span {
             text-align: right !important;
         }
-        
         /* تعديل مربع إدخال النص ليناسب العربية */
         .stChatInputContainer textarea {
             direction: rtl;
             text-align: right;
         }
-
-        /* توسيع الهوامش في شاشات الجوال لمنع الضغط والزوم */
+        
+        /* ========================================== */
+        /* التعديلات الجديدة (آمنة ولا تؤثر على الأداء) */
+        /* ========================================== */
+        
+        /* 1. إخفاء الشريط العلوي (صورتك، حسابك، واسم المنصة) ليكون رسمياً للجامعة */
+        header {visibility: hidden !important;}
+        
+        /* 2. إخفاء الشريط السفلي (علامة Made with Streamlit) */
+        footer {visibility: hidden !important;}
+        
+        /* 3. تحسين العرض على شاشات الجوال (إلغاء الحاجة للزوم وتصغير الهوامش الجانبية) */
         .block-container {
-            padding-top: 2rem !important;
-            padding-bottom: 2rem !important;
+            padding-top: 1.5rem !important;
+            padding-bottom: 1.5rem !important;
             padding-left: 1rem !important;
             padding-right: 1rem !important;
             max-width: 100% !important;
