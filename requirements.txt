@@ -1,6 +1,6 @@
-streamlit
+fastapi
+uvicorn[standard]
 google-genai
 chromadb
-sentence-transformers
-pymupdf
 python-dotenv
+pymupdf
