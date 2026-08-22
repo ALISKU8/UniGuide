@@ -55,6 +55,19 @@ st.markdown("""
 # ==========================================
 # 2. تحميل المتغيرات والاتصال بالخدمات
 # ==========================================
+load_dotenv()
+
+# قراءة المفتاح بأمان سواء محلياً أو من أسرار Streamlit Cloud
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+if not GEMINI_API_KEY:
+    try:
+        GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+    except Exception:
+        GEMINI_API_KEY = None
+
+# تهيئة عميل جيميناي الأساسي لإرسال الأسئلة وتوليد الردود
+gemini_client = genai.Client(api_key=GEMINI_API_KEY)
+
 from google.genai import types
 
 # نفس فئة التضمين المستخدمة في build_db
