@@ -6,41 +6,48 @@ from google import genai
 from dotenv import load_dotenv
 
 # ==========================================
-# 1. إعدادات الصفحة ودعم اللغة العربية (RTL)
+# 1. إعدادات الصفحة وتهيئة واجهة الكشك (Kiosk)
 # ==========================================
-# كود CSS لضبط اتجاه النص وتحسين الواجهة وإخفاء شعارات المنصة
+# استخدام expanded لإجبار الباركود على البقاء مفتوحاً دائماً في الشاشة
+st.set_page_config(
+    page_title="UniGuide - الخدمة الذاتية", 
+    layout="wide",
+    initial_sidebar_state="expanded" 
+)
+
+# كود CSS جديد ومبني من الصفر ليكون آمناً على شاشات الأندرويد
 st.markdown("""
     <style>
+        /* --- 1. دعم اللغة العربية --- */
         .stApp {
             direction: rtl;
         }
-        /* محاذاة جميع النصوص لليمين */
         p, div, h1, h2, h3, h4, h5, h6, ul, li, span {
             text-align: right !important;
         }
-        /* تعديل مربع إدخال النص ليناسب العربية */
         .stChatInputContainer textarea {
             direction: rtl;
             text-align: right;
         }
+
+        /* --- 2. إخفاء الشعارات العلوية بأمان تام --- */
+        /* جعل الشريط العلوي شفافاً ومخفياً دون حذف أبعاده لكي لا ينكسر التطبيق */
+        [data-testid="stHeader"] { 
+            background: transparent !important;
+        }
+        [data-testid="stHeader"] * {
+            display: none !important;
+        }
         
-        /* ========================================== */
-        /* التعديلات الجديدة (آمنة ولا تؤثر على الأداء) */
-        /* ========================================== */
-        
-        /* 1. إخفاء الشريط العلوي (صورتك، حسابك، واسم المنصة) ليكون رسمياً للجامعة */
-        header {visibility: hidden !important;}
-        
-        /* 2. إخفاء الشريط السفلي (علامة Made with Streamlit) */
-        footer {visibility: hidden !important;}
-        
-        /* 3. تحسين العرض على شاشات الجوال (إلغاء الحاجة للزوم وتصغير الهوامش الجانبية) */
+        /* إخفاء الفوتر (الحقوق السفلية) */
+        footer { 
+            visibility: hidden !important; 
+        }
+
+        /* --- 3. تحسين شاشة الكشك ومنع التكبير (Zoom) --- */
         .block-container {
             padding-top: 1.5rem !important;
-            padding-bottom: 1.5rem !important;
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
-            max-width: 100% !important;
+            padding-bottom: 2rem !important;
         }
     </style>
 """, unsafe_allow_html=True)
