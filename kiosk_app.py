@@ -8,40 +8,30 @@ from dotenv import load_dotenv
 # ==========================================
 # 1. إعدادات الصفحة ودعم اللغة العربية (RTL)
 # ==========================================
-# كود CSS لضبط اتجاه النص وتحسين الواجهة وإخفاء شعارات المنصة
+# التعديل الآمن: تحويل العرض إلى centered وإغلاق القائمة الجانبية تلقائياً في الجوال
+st.set_page_config(
+    page_title="UniGuide - الخدمة الذاتية", 
+    layout="centered", 
+    initial_sidebar_state="collapsed"
+)
+
+# كود CSS آمن يخفي الهيدر والفوتر دون المساس بأبعاد الـ React أو الشاشة
 st.markdown("""
     <style>
         .stApp {
             direction: rtl;
         }
-        /* محاذاة جميع النصوص لليمين */
         p, div, h1, h2, h3, h4, h5, h6, ul, li, span {
             text-align: right !important;
         }
-        /* تعديل مربع إدخال النص ليناسب العربية */
         .stChatInputContainer textarea {
             direction: rtl;
             text-align: right;
         }
-        
-        /* ========================================== */
-        /* التعديلات الجديدة (آمنة ولا تؤثر على الأداء) */
-        /* ========================================== */
-        
-        /* 1. إخفاء الشريط العلوي (صورتك، حسابك، واسم المنصة) ليكون رسمياً للجامعة */
-        header {visibility: hidden !important;}
-        
-        /* 2. إخفاء الشريط السفلي (علامة Made with Streamlit) */
-        footer {visibility: hidden !important;}
-        
-        /* 3. تحسين العرض على شاشات الجوال (إلغاء الحاجة للزوم وتصغير الهوامش الجانبية) */
-        .block-container {
-            padding-top: 1.5rem !important;
-            padding-bottom: 1.5rem !important;
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
-            max-width: 100% !important;
-        }
+        /* إخفاء الشريط العلوي والسفلي بأسلوب غير ضار للحسابات */
+        header { visibility: hidden !important; }
+        footer { visibility: hidden !important; }
+        [data-testid="stHeader"] { display: none; }
     </style>
 """, unsafe_allow_html=True)
 
